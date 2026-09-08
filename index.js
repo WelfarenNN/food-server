@@ -1,9 +1,7 @@
-import express, { response } from "express";
-import mongoose from "mongoose";
+import express from "express";
 import { connectDB } from "./connectedDB.js";
-import { User } from "./schemas/user-schema.js";
 import AuthRouter from "./routers/auth/auth.js";
-import foodCategoryRouter from "./routers/food-category/food-category-router.js";
+import FoodCategoryRouter from "./routers/food-category/food-category-router.js";
 
 const app = express();
 
@@ -18,8 +16,7 @@ app.get("/api/health", (request, response) => {
 });
 
 app.use("/auth", AuthRouter);
-app.use("/food-category", foodCategoryRouter);
-app.post("/food/category", async (request, response) => {});
+app.use("/food-category", FoodCategoryRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
