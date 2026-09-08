@@ -2,12 +2,14 @@ import express from "express";
 import { connectDB } from "./connectedDB.js";
 import AuthRouter from "./routers/auth/auth.js";
 import FoodCategoryRouter from "./routers/food-category/food-category-router.js";
+import cors from "cors"
 
 const app = express();
 
 const PORT = 1111;
 
 app.use(express.json());
+app.use(cors())
 
 connectDB();
 
