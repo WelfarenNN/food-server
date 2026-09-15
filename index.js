@@ -18,7 +18,7 @@ app.get("/api/health", (request, response) => {
 });
 
 app.use("/auth", AuthRouter);
-app.use("/food-category", FoodCategoryRouter);
+app.use("/food-category", FoodCategoryRouter);  
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
