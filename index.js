@@ -23,5 +23,3 @@ app.use("/food-category", FoodCategoryRouter);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
-//mongodb+srv://WelfarenNN:425824@food-delivery.3a0us94.mongodb.net/
