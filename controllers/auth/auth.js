@@ -3,9 +3,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 const SALT_ROUND = 10;
-const JWT_SECRET = "testing";
+const JWT_SECRET = process.env.JWT_SECRET;
 
-// ТОХИРГОО: Аюулгүй байдлын үүднээс JWT токен руу нууц үг биш, хэрэглэгчийн ID болон email-ийг дамжуулдаг болгов.
 const signAuthToken = (user) => {
   return jwt.sign(
     { id: user._id, email: user.email, role: user.role },
@@ -23,46 +22,38 @@ export const loginController = async (request, response) => {
     const { email, password } = request.body;
     const user = await User.findOne({ email: email });
     if (!user) {
-      return response.status(404).json({ message: "user not found" });
+      return response.status(401).json({ message: "Wrong email or username" });
     }
     const isPasswordMatching = await bcrypt.compare(password, user.password);
     if (!isPasswordMatching) {
-      return response.status(401).json({ message: "Password didn't match" });
+      return response.status(401).json({ message: "Incorrect password" });
     }
     const token = signAuthToken(user);
-    response
-      .status(200)
-      .json({
-        message: "user found",
-        user: publicUser(user),
-        token: signAuthToken(token),
-      });
+    response.status(200).json({
+      message: "user found",
+      user: publicUser(user),
+      token: token,
+    });
   } catch (err) {
     response.status(500).json({ message: "Internal Server Error", error: err });
   }
 };
 
-// 2. БҮРТГҮҮЛЭХ ХЭСЭГ (Шинэ талбаруудыг нэмсэн)
 export const signUpController = async (request, response) => {
   try {
-    // Frontend-ээс ирж буй шинэ талбаруудыг хүлээн авч байна
-    const { name, email, password, phone, address } = request.body;
+    const { name, email, password, phone, address, role } = request.body;
 
-    // Бүх талбар бөглөгдсөн эсэхийг шалгах код
     if (!name || !email || !password || !phone || !address) {
       return response.status(400).json({ message: "All fields are required" });
     }
 
-    // Имэйл өмнө нь бүртгэгдсэн эсэхийг давхар шалгах (Скемийн unique: true-г дэмжих)
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return response.status(400).json({ message: "Email already registered" });
     }
 
-    // Нууц үгийг кодлох
     const hashedPassword = await bcrypt.hash(password, SALT_ROUND);
 
-    // Өгөгдлийн санд бүх мэдээллийг хадгалах
     const user = await User.create({
       name,
       email,
@@ -71,15 +62,15 @@ export const signUpController = async (request, response) => {
       phone,
       address,
     });
-
     const token = signAuthToken(user);
 
     response.status(201).json({
       message: "user created",
       user: publicUser(user),
-      token: signAuthToken(token),
+      token: token,
     });
   } catch (err) {
+    console.error("Error in signUpController:", err);
     response.status(500).json({ message: "Internal Server Error", error: err });
   }
 };
