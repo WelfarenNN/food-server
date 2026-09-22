@@ -16,7 +16,7 @@ const signAuthToken = (user) => {
 };
 
 const publicUser = (user) => ({ _id: user._id, email: user.email });
-// 1. ЛОГИН ХЭСЭГ (Хэвээрээ үлдсэн)
+
 export const loginController = async (request, response) => {
   try {
     const { email, password } = request.body;
@@ -28,11 +28,11 @@ export const loginController = async (request, response) => {
     if (!isPasswordMatching) {
       return response.status(401).json({ message: "Incorrect password" });
     }
-    const token = signAuthToken(user);
+
     response.status(200).json({
       message: "user found",
       user: publicUser(user),
-      token: token,
+      token: signAuthToken(user),
     });
   } catch (err) {
     response.status(500).json({ message: "Internal Server Error", error: err });
@@ -62,12 +62,11 @@ export const signUpController = async (request, response) => {
       phone,
       address,
     });
-    const token = signAuthToken(user);
 
     response.status(201).json({
       message: "user created",
       user: publicUser(user),
-      token: token,
+      token: signAuthToken(user),
     });
   } catch (err) {
     console.error("Error in signUpController:", err);
