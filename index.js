@@ -2,6 +2,7 @@ import express from "express";
 import { connectDB } from "./connectedDB.js";
 import AuthRouter from "./routers/auth/auth.js";
 import FoodCategoryRouter from "./routers/food-category/food-category-router.js";
+import FoodRouter from "./routers/food/food-router.js"
 import cors from "cors"
 
 const app = express();
@@ -18,7 +19,8 @@ app.get("/api/health", (request, response) => {
 });
 
 app.use("/auth", AuthRouter);
-app.use("/food-category", FoodCategoryRouter);  
+app.use("/food-category", FoodCategoryRouter); 
+app.use("/food",FoodRouter) 
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
