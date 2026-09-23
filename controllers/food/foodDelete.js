@@ -7,7 +7,7 @@ export const foodDeleteController = async (request, response) => {
     const deletedFood = await Food.findByIdAndDelete(id);
 
     if (!deletedFood) {
-      return response.status(494).json({ message: "food item not found" });
+      return response.status(404).json({ message: "food item not found" });
     }
 
     response.status(200).json({ message: "delete", deletedFood });
